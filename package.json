@@ -18,7 +18,9 @@
   "homepage": "https://github.com/RobertToh/steaml2w_api#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "jsdom": "^16.6.0"
+    "express": "^4.17.1",
+    "jsdom": "^16.6.0",
+    "mongoose": "^5.12.11"
   },
   "jest": {
     "verbose": true,
