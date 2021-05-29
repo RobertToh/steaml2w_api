@@ -22,7 +22,8 @@
     "express": "^4.17.1",
     "express-sanitizer": "^1.0.6",
     "jsdom": "^16.6.0",
-    "mongoose": "^5.12.11"
+    "mongoose": "^5.12.11",
+    "node-cron": "^3.0.0"
   },
   "jest": {
     "verbose": true,

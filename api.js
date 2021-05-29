@@ -2,7 +2,9 @@ const   mongoose = require("mongoose"),
         express = require("express"),
         app = express(),
         bodyParser = require("body-parser"),
-        expressSanitizer = require('express-sanitizer');
+        expressSanitizer = require('express-sanitizer'),
+        schedule = require("./schedule.js"),
+        cron = require("node-cron");
 
 //Routes
 const   userRoutes = require("./routes/users.js");
@@ -24,6 +26,7 @@ app.use(expressSanitizer());
 //Use Routes
 app.use("/users/", userRoutes);
 
+cron.schedule("0 0 * * *", schedule.daily_check);
 
 //Start Server
 app.listen(3000, function () {
