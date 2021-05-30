@@ -2,9 +2,18 @@
 
 const   Activity = require("../models/activity"),
         User = require("../models/user"),
-        scraper = require("../scraper.js");
+        scraper = require("../scraper.js"),
+        mongoose = require("mongoose");
 
 function daily_check(){
+    mongoose.connect(process.env.DATABASEURL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    })
+        .then(() => console.log('Connected to DB!'))
+        .catch(error => console.log(error.message));
+
     console.log("Performing Daily Check!");
     User.find({}, function(err, users){
         if (err) {
