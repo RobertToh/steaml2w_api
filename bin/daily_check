@@ -5,7 +5,8 @@ const   Activity = require("../models/activity"),
         scraper = require("../scraper.js"),
         mongoose = require("mongoose");
 
-function daily_check(){
+
+async function daily_check() {
     mongoose.connect(process.env.DATABASEURL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -15,39 +16,28 @@ function daily_check(){
         .catch(error => console.log(error.message));
 
     console.log("Performing Daily Check!");
-    User.find({}, function(err, users){
-        if (err) {
-            console.log(err);
-        }
-        else {
-            users.forEach(function(user){
-                scraper.getProfileHours("https://steamcommunity.com/profiles/" + user.steamID).then(function (result) {
-                    let l2w;    
-                    if (result == -1) {
-                        //Profile link is no longer valid, or profile is private
-                        l2w = 0;
-                    }
-                    else {
-                        l2w = result;
-                    }
+    try {
+        let users = await User.find({});
+        for (const user of users) {
+            let result = await scraper.getProfileHours("https://steamcommunity.com/profiles/" + user.steamID);
+            let l2w;
+            if (result == -1) {
+                //Profile link is no longer valid, or profile is private
+                l2w = 0;
+            }
+            else {
+                l2w = result;
+            }
 
-                    Activity.create({
-                        l2w: result
-                    },
-                    function (err, activity) {
-                        if (err) {
-                            console.log(err);
-                        }
-                        else {
-                            user.hours.push(activity);
-                            user.save();
-                        }
-                    });
-                    
-                });
-            });
+            let activity = await Activity.create({l2w: result});
+            user.hours.push(activity);
+            await user.save();
         }
-    });
+        mongoose.disconnect();
+    }
+    catch(e) {
+        console.log(e);
+    }
 }
 
 daily_check();

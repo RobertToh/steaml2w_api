@@ -27,52 +27,28 @@ router.get("/:steam_id", function(req, res){
 
 
 //Create Route
-router.post("/", function(req,res) {
+router.post("/", async function(req,res) {
     if (req.body.steamID) {
         let steam_ID = req.sanitize(req.body.steamID);
         
-        User.create({
-            steamID: steam_ID   
-        }, 
-        function(err, user){
-            if (err) {
-                res.status(500);
-                res.json({ error: err });
+        try {
+            let result = await scraper.getProfileHours("https://steamcommunity.com/profiles/" + steam_ID);
+            if (result == -1){
+                //Profile link is not valid, or profile is private
+                res.json([]);
             }
             else {
-                scraper.getProfileHours("https://steamcommunity.com/profiles/" + steam_ID).then(function(result){
-                    if (result == -1) {
-                        //Delete created user from db
-                        User.deleteOne({steamID: steam_ID}, function(err){
-                            if (err) {
-                                res.status(500);
-                                res.json({ error: err });
-                            }
-                            else {
-                                res.json([]);
-                            }
-                        });
-                    }
-                    else {
-                        Activity.create({
-                            l2w: result
-                        },
-                        function (err, activity) {
-                            if (err) {
-                                res.status(500);
-                                res.json({ error: err });
-                            }
-                            else {
-                                user.hours.push(activity);
-                                user.save();
-                                res.json(user.hours);
-                            }
-                        });
-                    }    
-                });
+                let user = await User.create({ steamID: steam_ID });
+                let activity = await Activity.create({ l2w: result });
+                user.hours.push(activity);
+                await user.save();
+                res.json(user.hours);
             }
-        });
-
+        }
+        catch(e) {
+            res.status(500);
+            res.json({error: e});
+        }
     }
 });
 
