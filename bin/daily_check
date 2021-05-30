@@ -1,6 +1,8 @@
-const   Activity = require("./models/activity"),
-        User = require("./models/user"),
-        scraper = require("./scraper.js");
+#! /app/.heroku/node/bin/node
+
+const   Activity = require("../models/activity"),
+        User = require("../models/user"),
+        scraper = require("../scraper.js");
 
 function daily_check(){
     console.log("Performing Daily Check!");
@@ -39,4 +41,4 @@ function daily_check(){
     });
 }
 
-exports.daily_check = daily_check;
+daily_check();
