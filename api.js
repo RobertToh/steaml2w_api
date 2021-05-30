@@ -29,6 +29,8 @@ app.use("/users/", userRoutes);
 //cron.schedule("0 0 * * *", schedule.daily_check);
 
 //Start Server
-app.listen(3000, function () {
-    console.log("Server started on port 3000");
+let port = process.env.PORT || 3000
+app.listen(port, function () {
+    let message = "Server started on port " + port;
+    console.log(message);
 })
