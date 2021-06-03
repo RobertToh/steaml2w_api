@@ -23,6 +23,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(expressSanitizer());
 
+//Configure Access-Control-Allow-Origin
+app.use((req, res, next) => {
+    res.set({
+        "Access-Control-Allow-Origin": "*"
+    })
+    next();
+});
+
 //Use Routes
 app.use("/users/", userRoutes);
 
