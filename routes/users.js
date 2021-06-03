@@ -7,22 +7,28 @@ const   express = require("express"),
 
 //Show Route
 router.get("/:steam_id", function(req, res){ 
-    let steam_id = req.params.steam_id;
-    User.findOne({ steamID: steam_id }).populate("hours").exec(function (err, user) {
-        if (err) {
-            res.status(500);
-            res.json({error: err});
-        }
-        else {
-            if (user == null) {
-                res.json([]);
+    let steam_id = req.sanitize(req.params.steam_id);
+    User.findOne({ steamID: steam_id })
+        .populate({
+            path: "hours", 
+            select: "l2w log_date -_id",
+            options: {limit: 365, sort: {log_date: -1}}
+        })
+        .exec(function (err, user) {
+            if (err) {
+                res.status(500);
+                res.json({error: err});
             }
             else {
-                res.json(user.hours);
+                if (user == null) {
+                    res.json([]);
+                }
+                else {
+                    res.json(user.hours);
+                }
+                
             }
-            
-        }
-    })
+        });
 });
 
 
