@@ -23,7 +23,15 @@ async function daily_check() {
             let l2w;
             if (result == -1) {
                 //Profile link is no longer valid, or profile is private
-                l2w = 0;
+                
+                result = await scraper.getProfileHours("https://steamcommunity.com/id/" + user.steamID);
+                if (result == -1) {
+                    //Profile link is no longer valid, or profile is private
+                    l2w = 0;
+                }
+                else {
+                    l2w = result;
+                }
             }
             else {
                 l2w = result;

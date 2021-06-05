@@ -38,18 +38,33 @@ router.post("/", async function(req,res) {
         let steam_ID = req.sanitize(req.body.steamID);
         
         try {
+            let valid = false;
             let result = await scraper.getProfileHours("https://steamcommunity.com/profiles/" + steam_ID);
             if (result == -1){
                 //Profile link is not valid, or profile is private
-                res.json([]);
+                valid = false;
+
+                result = await scraper.getProfileHours("https://steamcommunity.com/id/" + steam_ID);
+                if (result == -1) {
+                    //Profile link is not valid, or profile is private
+                    valid = false;
+                    res.json([]);
+                }
+                else {
+                    valid = true;
+                }
             }
             else {
+                valid = true;
+            }
+            if (valid) {
                 let user = await User.create({ steamID: steam_ID });
                 let activity = await Activity.create({ l2w: result });
                 user.hours.push(activity);
                 await user.save();
                 res.json(user.hours);
             }
+
         }
         catch(e) {
             res.status(500);
