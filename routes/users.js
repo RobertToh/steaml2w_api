@@ -34,9 +34,6 @@ router.get("/:steam_id", function(req, res){
 
 //Create Route
 router.post("/", async function(req,res) {
-    res.set({
-        "Access-Control-Allow-Headers": "Content-Type"
-    })
     if (req.body.steamID) {
         let steam_ID = req.sanitize(req.body.steamID);
         
