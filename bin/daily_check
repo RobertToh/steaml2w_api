@@ -2,7 +2,7 @@
 
 const   Activity = require("../models/activity"),
         User = require("../models/user"),
-        scraper = require("../scraper.js"),
+        steamAPI = require("../steamAPI.js"),
         mongoose = require("mongoose");
 
 
@@ -19,25 +19,20 @@ async function daily_check() {
     try {
         let users = await User.find({});
         for (const user of users) {
-            let result = await scraper.getProfileHours("https://steamcommunity.com/profiles/" + user.steamID);
+            let result = await steamAPI.getProfileHours(user.steamID);
             let l2w;
+            let games;
             if (result == -1) {
-                //Profile link is no longer valid, or profile is private
-                
-                result = await scraper.getProfileHours("https://steamcommunity.com/id/" + user.steamID);
-                if (result == -1) {
-                    //Profile link is no longer valid, or profile is private
-                    l2w = 0;
-                }
-                else {
-                    l2w = result;
-                }
+                //Profile is now private
+                l2w = 0;
+                games = []
             }
             else {
-                l2w = result;
+                l2w = result.total_hours;
+                games = result.games;
             }
 
-            let activity = await Activity.create({l2w: result});
+            let activity = await Activity.create({l2w: l2w, games: games});
             user.hours.push(activity);
             await user.save();
         }
