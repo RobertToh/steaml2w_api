@@ -7,7 +7,8 @@ const   mongoose = require("mongoose"),
         //cron = require("node-cron");
 
 //Routes
-const   userRoutes = require("./routes/users.js");
+const   userRoutes = require("./routes/users.js"),
+        profileRoutes = require("./routes/profiles.js");
 
 //Setup DB connection
 mongoose.connect(process.env.DATABASEURL, {
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 
 //Use Routes
 app.use("/users/", userRoutes);
+app.use("/profiles/", profileRoutes);
 
 //cron.schedule("0 0 * * *", schedule.daily_check);
 
