@@ -7,7 +7,8 @@ let activitySchema = new mongoose.Schema({
         appid: Number,
         name: String,
         playtime_2weeks: Number,
-        img_logo_url: String
+        img_logo_url: String,
+        img_icon_url: String
     }]
 });
 
