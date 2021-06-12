@@ -22,7 +22,8 @@ const getProfileHours = async (steam_id) => {
                 appid: game.appid,
                 name: game.name,
                 playtime_2weeks: game.playtime_2weeks,
-                img_logo_url: game.img_logo_url
+                img_logo_url: game.img_logo_url,
+                img_icon_url: game.img_icon_url
             };
             games_trim.push(g);
         });
