@@ -11,6 +11,10 @@ const getProfileHours = async (steam_id) => {
         }
         
         let games_data = data.response.games;
+        if (games_data === undefined) {
+            //Game data was hidden
+            return -1;
+        }
         let games_trim = []
         
         let total_mins = 0;
