@@ -40,6 +40,7 @@ const getProfileHours = async (steam_id) => {
     }
     catch (error) {
         console.log(error);
+        return -1;
     }
 }
 
